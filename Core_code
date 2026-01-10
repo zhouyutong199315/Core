@@ -112,98 +112,6 @@
                 err_ArrayList_all.Add(err);
               
                
-                err_sum += err;
-                err_sum %= 360;
-
-
-
-
-                kp = Math.Abs(err / targetvalue);//kp;
-                ki = Math.Abs(err / err_sum);
-                kd = Math.Abs((err - err_last) / err);
-               
-
-                //权重初始化：
-                double[] array_weight = new double[]
-                {
-                kp,
-                ki,
-                kd
-                };
-                double maxValue = Math.Floor(Max(array_weight)) + 1;
-                array_weight[0] /= maxValue;
-                array_weight[1] /= maxValue;
-                array_weight[2] /= maxValue;
-                tc_weights_vector = new double[3, 1];
-                //生成3个[0,1]随机变量：
-                kp = array_weight[0];
-                ki = array_weight[1];
-                kd = array_weight[2];
-
-             
-                //TC处理：
-                TC_Algorithm_weight(kp, ki, kd);
-                double kp_0 = kp;
-                double ki_0 = ki;
-                double kd_0 = kd;
-                double kp_1 = tc_weights_vector[0, 0];
-                double ki_1 = tc_weights_vector[1, 0];
-                double kd_1 = tc_weights_vector[2, 0];
-
-             
-                if (kp < ki || kp < kd || kd < ki)
-                {
-                    double[] array_weight_1 = new double[]
-                       {
-                     kp,
-                     ki,
-                     kd };
-                    //System.Console.WriteLine(u_return.ToString() + "\t" +
-                    //kp.ToString() + "\t" +
-                    //ki.ToString() + "\t" +
-                    //kd.ToString() + "\t" + "AAAAAAAAAAAAAAAAAAA");
-
-                    double maxValue_1 = Math.Ceiling(Max(array_weight_1)) + 1;//Floor
-
-                    kp = tc_weights_vector[0, 0] / maxValue_1;
-                    ki = tc_weights_vector[1, 0] / maxValue_1;
-                    kd = tc_weights_vector[2, 0] / maxValue_1;
-                }
-                //}
-                //论文中的位置：效果不咋地，因为sequecnce_kp.Add放错地方了，因为add的是err，不是处理后的权重啊。。。
-                //sequecnce_kp.Add(kp);
-                //sequecnce_ki.Add(ki);
-                //sequecnce_kd.Add(kd);
-                Console.WriteLine(
-                    "无偏：aaaa" +
-                    "err：" + err.ToString() + "aaaa" +
-                     "err_sum：" + err_sum.ToString() + "aaaa" +
-                     "(err - err_last)：" + (err - err_last).ToString() + "aaaa\n");
-                Console.WriteLine(
-                    "无偏：aaaa" +
-                    "kp：" + kp.ToString() + "aaaa" +
-                     "ki：" + ki.ToString() + "aaaa" +
-                     "kd：" + kd.ToString() + "aaaa\n");
-
-                double aaaaaaaaaaaaaaaaaaaaaaaaaa = -1645 % 360;
-                double w_r = 1;
-                double ws = 1;
-
-                if (AutoPilot.sendData_toFG_Autopilot.cnt_currentRouteSegment == Route_Information.routeInformation_Storage.my_arrayLists_Route_Segment.Length - 2
-                //&& AutoPilot.decisionMaking.deltaDistance_m <= 26458
-                )
-                {
-                    ki = 0.6;
-                    kp = 0.15;
-                    kd = 0.15;
-                    w_r = 0.8;
-                    ws = 1;
-                }
-
-
-
-
-
                 u_return = kp * err + ki * err_sum + kd * (err - err_last);
 
                 u_return %= 360;
@@ -232,41 +140,6 @@
                     ;
 
 
-                
-                Console.WriteLine(
-                "当前航向：" +
-                currentvalue.ToString() +
-                "运行一段时间后，真正所需的航向：" +
-               AutoPilot.sendData_toFG_Autopilot.courseAngle(
-               AutoPilot.decisionMaking.trueValue("position-longitude-deg"),
-               AutoPilot.decisionMaking.trueValue("position-latitude-deg"),
-               AutoPilot.sendData_toFG_Autopilot.myLongitude_RouteSegment_Target,
-               AutoPilot.sendData_toFG_Autopilot.myLatitude_RouteSegment_Target).ToString() +
-                "\t" +
-                "目标航向：" +
-                targetvalue.ToString() +
-                "\t" +
-                "决策航向：" +
-                u_return.ToString() +
-                "\t" + "\n"
-                );
-
-
-
-
-
-                if (u_return.ToString() == "NaN")
-                {
-                    u_return =
-                        
-                        AutoPilot.sendData_toFG_Autopilot.courseAngle(
-                    AutoPilot.decisionMaking.trueValue("position-longitude-deg"),
-                    AutoPilot.decisionMaking.trueValue("position-latitude-deg"),
-                    AutoPilot.sendData_toFG_Autopilot.myLongitude_RouteSegment_Target,
-                    AutoPilot.sendData_toFG_Autopilot.myLatitude_RouteSegment_Target)
-                        
-                        ;
-                }
 
                 u_return = (u_return + 360) % 360;
 
@@ -279,20 +152,6 @@
                 //未体现偏差对参数影响：
                 myReturn_Heading = u_return;
 
-                if (shortcut == 1)
-                {
-                    int cnt_bias = 0;
-                    string[] CognitiveBiases_Names_Time
-                    = new string[]
-                    {
-                    CognitiveBiases.HumanFactors.CognitiveBiases_Names[cnt_bias]
-                       
-                    };
-                    Console.WriteLine(CognitiveBiases.HumanFactors.CognitiveBiases_Names[cnt_bias]);
-                    CognitiveBiases.HumanFactors.CognitiveBiases_allName.Add(CognitiveBiases_Names_Time);
-                    CognitiveBiases.HumanFactors.bias_times++;
-                    CognitiveBiases.HumanFactors.this_time_biasedName = CognitiveBiases.HumanFactors.CognitiveBiases_Names[cnt_bias];
-                }
             }
             else
             {
@@ -375,82 +234,8 @@
                        AutoPilot.sendData_toFG_Autopilot.myLatitude_RouteSegment_Target);
                     err_sum += err;
 
-                    err_sum %= 360;
 
-
-                    ////////////
-                    double w_err = err_new;
-                    double w_d_err_1 = delta_err_new;
-                    double w_err_sum = err_sum_new;
-                    if (err_last == 0)
-                        kp = Math.Abs(err_new / 1);
-                    else
-                        kp = Math.Abs(err_new / err_last);//kp;
-                                                          //kp = Math.Abs(w_err / targetvalue);//kp;
-                    ki = Math.Abs(err / w_err_sum);
-                    kd = Math.Abs(w_d_err_1 / err);
-                    ////可行位置：（3）：
-
-                    //尝试位置：（4）
-                    //u_return = kp * err + ki * err_sum + kd * (err - err_last);
-
-
-                    //权重初始化：
-                    double[] array_weight = new double[]
-                    {
-                kp,
-                ki,
-                kd
-                    };
-                    double maxValue = Math.Floor(Max(array_weight)) + 1;
-                    array_weight[0] /= maxValue;
-                    array_weight[1] /= maxValue;
-                    array_weight[2] /= maxValue;
-                    tc_weights_vector = new double[3, 1];
-                    //生成3个[0,1]随机变量：
-                    kp = array_weight[0];
-                    ki = array_weight[1];
-                    kd = array_weight[2];
-                    //论文中先add误差，再归一化，最后TC处理
-                    //sequecnce_kp.Add(kp);
-                    //sequecnce_ki.Add(ki);
-                    //sequecnce_kd.Add(kd);
-                    //TC处理：
-                    TC_Algorithm_weight(kp, ki, kd);
-                    double kp_0 = kp;
-                    double ki_0 = ki;
-                    double kd_0 = kd;
-                    double kp_1 = tc_weights_vector[0, 0];
-                    double ki_1 = tc_weights_vector[1, 0];
-                    double kd_1 = tc_weights_vector[2, 0];
-
-                    kp = tc_weights_vector[0, 0];
-                    ki = tc_weights_vector[1, 0];
-                    kd = tc_weights_vector[2, 0];
-
-                    //归一化：
-                    if (kp < ki || kp < kd || kd < ki)
-                    {
-                        double[] array_weight_1 = new double[]
-                    {
-                kp,
-                ki,
-                kd
-                    };
-                        //System.Console.WriteLine(u_return.ToString() + "\t" +
-                        //kp.ToString() + "\t" +
-                        //ki.ToString() + "\t" +
-                        //kd.ToString() + "\t" + "AAAAAAAAAAAAAAAAAAA");
-
-                        double maxValue_1 = Math.Ceiling(Max(array_weight_1)) + 1;//Floor
-
-                        kp = tc_weights_vector[0, 0] / maxValue_1;
-                        ki = tc_weights_vector[1, 0] / maxValue_1;
-                        kd = tc_weights_vector[2, 0] / maxValue_1;
-                    }
-
-
-
+                  
 
                     sequecnce_kp.Add(kp);
                     sequecnce_ki.Add(ki);
@@ -458,14 +243,6 @@
                     sequecnce_kp_all.Add(kp);
                     sequecnce_ki_all.Add(ki);
                     sequecnce_kd_all.Add(kd);
-
-
-
-                    //论文中的位置：效果不咋地，因为sequecnce_kp.Add放错地方了，因为add的是err，不是处理后的权重啊。。。
-                    //sequecnce_kp.Add(kp);
-                    //sequecnce_ki.Add(ki);
-                    //sequecnce_kd.Add(kd);
-                    //u_return = kp * err + ki * err_sum + kd * (err - err_last);
 
 
 
@@ -538,89 +315,7 @@
                         double w_err = err_new;
                         double w_d_err_1 = delta_err_new;
                         double w_err_sum = err_sum_new;
-                        if (err_last == 0)
-                            kp = Math.Abs(err_new / 1);
-                        else
-                            kp = Math.Abs(err_new / err_last);//kp;
-                                                              //kp = Math.Abs(w_err / targetvalue);//kp;
-                        ki = Math.Abs(err / w_err_sum);
-                        kd = Math.Abs(w_d_err_1 / err);
                       
-
-                     
-                       
-                        //权重初始化：
-                        double[] array_weight = new double[]
-                        {
-                kp,
-                ki,
-                kd
-                        };
-                        double maxValue = Math.Floor(Max(array_weight)) + 1;
-                        array_weight[0] /= maxValue;
-                        array_weight[1] /= maxValue;
-                        array_weight[2] /= maxValue;
-                        tc_weights_vector = new double[3, 1];
-                        //生成3个[0,1]随机变量：
-                        kp = array_weight[0];
-                        ki = array_weight[1];
-                        kd = array_weight[2];
-                        //论文中先add误差，再归一化，最后TC处理
-                        //sequecnce_kp.Add(kp);
-                        //sequecnce_ki.Add(ki);
-                        //sequecnce_kd.Add(kd);
-                        //TC处理：
-                        TC_Algorithm_weight(kp, ki, kd);
-                        double kp_0 = kp;
-                        double ki_0 = ki;
-                        double kd_0 = kd;
-                        double kp_1 = tc_weights_vector[0, 0];
-                        double ki_1 = tc_weights_vector[1, 0];
-                        double kd_1 = tc_weights_vector[2, 0];
-
-                        kp = tc_weights_vector[0, 0];
-                        ki = tc_weights_vector[1, 0];
-                        kd = tc_weights_vector[2, 0];
-
-                        //归一化：
-                        if (kp < ki || kp < kd || kd < ki)
-                        {
-                            double[] array_weight_1 = new double[]
-                        {
-                kp,
-                ki,
-                kd
-                        };
-                            //System.Console.WriteLine(u_return.ToString() + "\t" +
-                            //kp.ToString() + "\t" +
-                            //ki.ToString() + "\t" +
-                            //kd.ToString() + "\t" + "AAAAAAAAAAAAAAAAAAA");
-
-                            double maxValue_1 = Math.Ceiling(Max(array_weight_1)) + 1;//Floor
-
-                            kp = tc_weights_vector[0, 0] / maxValue_1;
-                            ki = tc_weights_vector[1, 0] / maxValue_1;
-                            kd = tc_weights_vector[2, 0] / maxValue_1;
-                        }
-
-
-
-
-                        sequecnce_kp.Add(kp);
-                        sequecnce_ki.Add(ki);
-                        sequecnce_kd.Add(kd);
-                        sequecnce_kp_all.Add(kp);
-                        sequecnce_ki_all.Add(ki);
-                        sequecnce_kd_all.Add(kd);
-
-
-
-                        //论文中的位置：效果不咋地，因为sequecnce_kp.Add放错地方了，因为add的是err，不是处理后的权重啊。。。
-                        //sequecnce_kp.Add(kp);
-                        //sequecnce_ki.Add(ki);
-                        //sequecnce_kd.Add(kd);
-                        //u_return = kp * err + ki * err_sum + kd * (err - err_last);
-
 
 
                         if (err_ArrayList.Count == 0)
@@ -637,17 +332,6 @@
 
 
 
-
-                        Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaa：" + aaaaaaaaaaaaaaaaaaaaaaaaaa.ToString() +
-                            "无偏：aaaa" +
-                            "err：" + err.ToString() + "aaaa" +
-                             "err_sum：" + err_sum.ToString() + "aaaa" +
-                             "(err - err_last)：" + (err - err_last).ToString() + "aaaa\n");
-                        Console.WriteLine(
-                            "无偏：aaaa" +
-                            "kp：" + kp.ToString() + "aaaa" +
-                             "ki：" + ki.ToString() + "aaaa" +
-                             "kd：" + kd.ToString() + "aaaa\n");
 
 
 
